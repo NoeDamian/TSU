@@ -106,7 +106,6 @@ public class Registrar extends JFrame {
 		id.setText("0");
 		/*llamado de las clases*/
 			
-			autoid();
 		
 		JLabel lblNombres = new JLabel("Nombres");
 		lblNombres.setBounds(107, 11, 62, 14);
@@ -182,7 +181,7 @@ public class Registrar extends JFrame {
 		
 		JComboBox equipo = new JComboBox();
 		equipo.setToolTipText("");
-		equipo.setModel(new DefaultComboBoxModel(new String[] {"SELECCIONE", "SSD", "HD", "USB", "FLOPPY", "CD", "DVD", "HD", "FIREWARE"}));
+		equipo.setModel(new DefaultComboBoxModel(new String[] {"SELECCIONE", "SSD", "HD", "USB", "FLOPPY", "CD", "DVD", "FIREWARE"}));
 		equipo.setSelectedIndex(0);
 		equipo.setBounds(21, 75, 98, 20);
 		contentPane.add(equipo);
@@ -228,6 +227,7 @@ public class Registrar extends JFrame {
 				
 				// elemento raiz
 				Document doc = docBuilder.newDocument();
+				
 				Element rootElement = doc.createElement("categorias");
 				doc.appendChild(rootElement);
 		 
@@ -274,7 +274,7 @@ public class Registrar extends JFrame {
 				DOMSource source = new DOMSource(doc);
 				
 			
-				StreamResult result = new StreamResult(new File("C:\\Archivo\\Registros\\"+autoid+".xml"));
+				StreamResult result = new StreamResult(new File("M:\\\\Test Software Utilities\\Archivo\\Registros\\"+autoid+".xml"));
 				
 		 
 				transformer.transform(source, result);
@@ -286,19 +286,8 @@ public class Registrar extends JFrame {
 				} catch (TransformerException tfe) {
 					tfe.printStackTrace();
 				}
-			}
-	public  void autoid() {
-		String ruta = ("\\C:\\Archivo\\Registros\\"+id.getText()+".xml");
-		String numeroid=(id.getText());
-		int numEntero = Integer.parseInt(numeroid);
-		File fichero = new File(ruta);
-		if(fichero.exists()) {
-		//	System.out.print("Id ya creado");
-			int autosuma=numEntero+1;
-			id.setText(""+autosuma);
-			id.updateUI();
-			id.repaint();
-		}
+			
+	
 		
 	}
 	public void leerxml() {
@@ -308,7 +297,7 @@ public class Registrar extends JFrame {
 		try
 		{
 		   DocumentBuilder builder = factory.newDocumentBuilder();
-		   documento = builder.parse( new File("C:\\Archivo\\Registros\\"+autoid+".xml") );
+		   documento = builder.parse( new File("M:\\\\Test Software Utilities\\Archivo\\Registros\\"+autoid+".xml") );
 		  documento.getDocumentElement().normalize();
 		 // NodeList listaEmpleados = document.getElementsByTagName("nombre");
 		  String padre = documento.getDocumentElement().getNodeName();

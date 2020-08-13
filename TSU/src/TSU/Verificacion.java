@@ -1,64 +1,55 @@
 package TSU;
 
-import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.EventQueue;
-import java.awt.GridLayout;
+import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.BufferedInputStream;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileReader;
+import java.io.IOException;
+import java.net.InetAddress;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Base64;
+import java.util.Date;
 
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.border.EmptyBorder;
-import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 import javax.swing.JTextField;
-import javax.swing.JButton;
-import javax.swing.JFileChooser;
-import javax.swing.filechooser.FileSystemView;
-import javax.swing.plaf.FileChooserUI;
+import javax.swing.SwingConstants;
+import javax.swing.border.EmptyBorder;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-import org.w3c.dom.Text;
 import org.xml.sax.SAXException;
 
-import java.awt.event.ActionListener;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
-import java.io.BufferedInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.math.BigInteger;
-import java.nio.file.FileSystems;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.util.Base64;
-import java.util.Formatter;
-import java.awt.event.ActionEvent;
-import javax.swing.JComboBox;
-import javax.swing.DefaultComboBoxModel;
-import javax.swing.ImageIcon;
-import java.math.BigInteger;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.awt.Color;
-import javax.swing.SwingConstants;
-import java.awt.Font;
-import java.awt.SystemColor; 
-
+import java.net.InetAddress;
 
 
 public class Verificacion extends JFrame {
 
-	private JPanel contentPane;
+	public static JPanel ventana;
 	File Unidades[];
 		Object items[];
 		
@@ -66,11 +57,16 @@ public class Verificacion extends JFrame {
 	 	Object[] Arc;
 	 	
 		String nl = System.getProperty("line.separator");
-
-	 JComboBox comboBox=new JComboBox();
 	 private JTextField estado;
+	 public String rutamaestra;
 
 	JComboBox comboboxtsu = new JComboBox();
+	public String ESTADO;
+    String idusb = null;
+    public String usuario= System.getProperty("user.name");
+    public String Equipolocal;
+   
+	//fpublic String ruta;
 	
 	
 	
@@ -101,58 +97,24 @@ public class Verificacion extends JFrame {
 	 * @throws SAXException 
 	 * @throws ParserConfigurationException 
 	 */
-	public Verificacion() throws NoSuchAlgorithmException, IOException, ParserConfigurationException, SAXException {
-		buscarUnidades();
+	public Verificacion(){
+		
 		listadearchivo();
 		
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		setTitle("Verificacion");
-		setBounds(100, 100, 242, 302);
-		contentPane = new JPanel();
-		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
-		setContentPane(contentPane);
-		contentPane.setLayout(null);
-		comboBox.setBounds(10, 36, 83, 20);
-		contentPane.add(comboBox);
-			
-		JLabel lblNewLabel = new JLabel("Seleccione Drive");
-		lblNewLabel.setBounds(10, 11, 110, 14);
-		contentPane.add(lblNewLabel);
+		setBounds(100, 100, 242, 259);
+		ventana = new JPanel();
+		ventana.setBorder(new EmptyBorder(5, 5, 5, 5));
+		setContentPane(ventana);
+		ventana.setLayout(null);
 
-		JButton btnVerificar = new JButton("verificar");
+		JButton btnVerificar = new JButton("<html><center>Seleccionar Driver </br>  Verificar</center></html>");
+		btnVerificar.setFont(new Font("Tahoma", Font.PLAIN, 16));
 		btnVerificar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				verificaciondedriver();
-				File sFichero = verificaciondedriver();
-				
-				if(sFichero.exists()) {
-						try {
-							leerxml();
-						} catch (ParserConfigurationException e1) {
-							// TODO Auto-generated catch block
-							e1.printStackTrace();
-						} catch (SAXException e1) {
-							// TODO Auto-generated catch block
-							e1.printStackTrace();
-						} catch (IOException e1) {
-							// TODO Auto-generated catch block
-							e1.printStackTrace();
-						}
-						try {
-							hash();
-						} catch (NoSuchAlgorithmException e1) {
-							// TODO Auto-generated catch block
-							e1.printStackTrace();
-						} catch (IOException e1) {
-							// TODO Auto-generated catch block
-							e1.printStackTrace();
-						} catch (ParserConfigurationException e1) {
-							// TODO Auto-generated catch block
-							e1.printStackTrace();
-						} catch (SAXException e1) {
-							// TODO Auto-generated catch block
-							e1.printStackTrace();
-						}
+				System.out.println(Equipolocal);
+
 						try {
 							verificar();
 						} catch (NoSuchAlgorithmException e) {
@@ -167,74 +129,27 @@ public class Verificacion extends JFrame {
 						} catch (IOException e) {
 							// TODO Auto-generated catch block
 							e.printStackTrace();
+						} catch (TransformerException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
 						}
-						
-
 					
-					}
-				else{
-			    JOptionPane.showMessageDialog(null, "No Existe documento");
-
-
-					}
+					
 				}
 		});				
 		
 		
 		
 		 
-		btnVerificar.setBounds(56, 191, 89, 23);
-		contentPane.add(btnVerificar);
+		btnVerificar.setBounds(20, 134, 176, 84);
+		ventana.add(btnVerificar);
 		
 		JLabel lblSeleccioneTsu = new JLabel("Seleccione  TSU");
-		lblSeleccioneTsu.setBounds(113, 11, 101, 14);
-		contentPane.add(lblSeleccioneTsu);
+		lblSeleccioneTsu.setBounds(44, 11, 101, 14);
+		ventana.add(lblSeleccioneTsu);
 		
-		comboboxtsu.setBounds(113, 36, 101, 20);
-		contentPane.add(comboboxtsu);
-		
-		JButton btnActualizar = new JButton("Actualizar");
-		btnActualizar.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent arg0) {
-				comboBox.removeAllItems();
-				comboboxtsu.removeAllItems();
-				File archivo = new File("C:\\Archivo\\TSUCATEGORIAS\\");
-
-				CrearTSU frametsu = new CrearTSU();
-				String[] listado = archivo.list();
-
-				
-				Unidades = File.listRoots();
-				File unidades[] = File.listRoots();
-				
-				Object it[]=new Object[Unidades.length];
-				  for (int i=0;i<unidades.length;i++) {
-					  File s1 = (unidades[i]);
-				         it[i]=s1;
-				       }
-				  
-				  items=it;
-				  comboBox.updateUI();
-				  for(int i=0;i<it.length;i++){
-				  comboBox.addItem(it[i]);
-				  }
-				  Object arc[]=new Object[listado.length];
-					for(int i =0;i<listado.length;i++) {
-						String s2=(listado[i]);
-						arc[i]=s2;
-					}
-					Arc = arc;
-					comboboxtsu.removeAllItems();
-				 for (int i=0; i< listado.length; i++) {
-					 comboboxtsu.addItem(Arc[i]);
-
-				 }
-			}
-		});
-		
-		btnActualizar.setBounds(48, 67, 110, 23);
-		contentPane.add(btnActualizar);
+		comboboxtsu.setBounds(20, 36, 176, 20);
+		ventana.add(comboboxtsu);
 		
 		estado = new JTextField();
 		estado.setForeground(new Color(255, 255, 255));
@@ -242,35 +157,37 @@ public class Verificacion extends JFrame {
 		estado.setHorizontalAlignment(SwingConstants.CENTER);
 		estado.setBackground(new Color(255, 255, 255));
 		estado.setEditable(false);
-		estado.setBounds(10, 126, 213, 54);
-		contentPane.add(estado);
+		estado.setBounds(10, 69, 206, 54);
+		ventana.add(estado);
 		estado.setColumns(10);
-	}
-
-
-	public void buscarUnidades() {
-
-		Unidades = File.listRoots();
-		File unidades[] = File.listRoots();
 		
-		Object it[]=new Object[Unidades.length];
-		  for (int i=0;i<unidades.length;i++) {
-			  File s1 = (unidades[i]);
-		         it[i]=s1;
-		       }
-		  
-		  items=it;
-		  comboBox.removeAllItems();
-		  comboBox.update(null);
-		  for(int i=0;i<it.length;i++){
-		  comboBox.addItem(it[i]);
-		  }
-		 
+		
 	}
+	public String creacionruta() throws IOException {
+		
+		JFileChooser fileChooser = new JFileChooser();
+		//problema al momento de cerrar la app o darle cancelar, se vuelve a abrir y da un error en la funcion hash al no recivir la ruta.
+		//fileChooser.setCurrentDirectory(new java.io.File("M:\\\\Test Software Utilities\\Users\\noe_moreno\\Desktop\\"));
+		//fileChooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
+		//FileNameExtensionFilter filter = new FileNameExtensionFilter("CFG","cfg");
+		//fileChooser.setFileFilter(filter);
+		//fileChooser.setAcceptAllFileFilterUsed(false);
+		fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+		 if (fileChooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) { 
+	       
+			  rutamaestra =  (fileChooser.getSelectedFile().toString());
+
+		 	}else if(fileChooser.showOpenDialog(this) == JFileChooser.CANCEL_OPTION) {
+		 	}		 	
+			 
+		return rutamaestra;	
+	}
+
+	
 	public  String leerxml() throws ParserConfigurationException, SAXException, IOException {
 		String N = (String) (comboboxtsu.getSelectedItem());
 		String remplazo = N.replace(".xml", "");
-        File archivo = new File("C:\\Archivo\\TSUCATEGORIAS\\"+remplazo+".xml");
+        File archivo = new File("M:\\\\Test Software Utilities\\Archivo\\TSUCATEGORIAS\\"+remplazo+".xml");
 		String hash21 = "";
 		
 		DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
@@ -278,8 +195,8 @@ public class Verificacion extends JFrame {
 		Document document = documentBuilder.parse(archivo);
 		
 		document.getDocumentElement().normalize();
-
-		 NodeList listaEmpleados = document.getElementsByTagName(remplazo);
+		//en la creacion de XML hagarra como  nombre del nodo como nodo hijo principal
+		 NodeList listaEmpleados = document.getElementsByTagName("Catalogo");
 		 
 		 for (int temp = 0; temp < listaEmpleados.getLength(); temp++) {
 	         Node nodo = listaEmpleados.item(temp);
@@ -296,13 +213,26 @@ public class Verificacion extends JFrame {
 		
 		}
 	public  String hash() throws NoSuchAlgorithmException, IOException, ParserConfigurationException, SAXException {
-		File sFichero = verificaciondedriver();
+		//necesita la ruta para acceder al archivo seleccionado y ponerle el hash
 		
+		String ruta= creacionruta();
+		String rutaexistente = null ;
+		File rutadrive = new File(ruta);
+		File rutamemtestdrive = new File(ruta+"\\EFI\\BOOT\\mt86.cfg");
+		File rutanetwork  = new File(ruta+"\\Test Software Utilities\\");
+		//creamos rutas ya conocidas para hacer el proceso mas sencillo de solo seleccionar el drive para hacer la verificacion
+		if(rutamemtestdrive.exists()) {
+			rutaexistente = rutamemtestdrive.toString();
+		}else if(rutanetwork.exists()) {
+			JOptionPane.showMessageDialog(null, "Es el drive"+ruta+"de test Engineering");
+
+		}
+		File fichero = new File(rutaexistente);
 		
 		byte[] buffer= new byte[8192];
 		int count;
 		MessageDigest digest = MessageDigest.getInstance("SHA-1");
-		BufferedInputStream bis = new BufferedInputStream(new FileInputStream(sFichero));
+		BufferedInputStream bis = new BufferedInputStream(new FileInputStream(fichero));
 		while ((count = bis.read(buffer)) > 0) {
         digest.update(buffer, 0, count);
     }
@@ -310,35 +240,38 @@ public class Verificacion extends JFrame {
 
     byte[] hash = digest.digest();
     String filehash= Base64.getEncoder().encodeToString(hash);
+    
+    
+	
+	
     return filehash;
     
     
 
 		}
-	public void verificar() throws ParserConfigurationException, SAXException, IOException, NoSuchAlgorithmException {
+	public void verificar() throws ParserConfigurationException, SAXException, IOException, NoSuchAlgorithmException, TransformerException {
 		String filehash = hash();
 		String hsh = leerxml();
 		
-
 		if (filehash.equals(hsh)){
 		    estado.setText("Coinciden");
 			estado.setBackground(new Color(102, 204, 51));
+			ESTADO = "HABILITADO";
 	    }
 	    else {
 	    	
 	    		estado.setText("No Coinciden");
 	    		estado.setBackground(new Color(255, 0, 0));
-	    		
+	    		ESTADO="DESHABILITADO";
 	    		}
-		
-	}	
-	public void listadearchivo() {
-	File archivo = new File("C:\\Archivo\\TSUCATEGORIAS\\");
-		CrearTSU frametsu = new CrearTSU();
-	    
 
+		registro();
+	}
+	
+	public void listadearchivo() {
+	File archivo = new File("M:\\\\Test Software Utilities\\Archivo\\TSUCATEGORIAS\\");
+		CrearTSU frametsu = new CrearTSU();
 		String[] listado = archivo.list();
-		
 		if (listado == null || listado.length == 0) {
 			
 		 JOptionPane.showMessageDialog(null, "No hay elementos TSU"+nl+"Crear TSU desado");
@@ -348,11 +281,11 @@ public class Verificacion extends JFrame {
 		else {
 			Object arc[]=new Object[listado.length];
 			for(int i =0;i<listado.length;i++) {
+				
 				String s2=(listado[i]);
 				arc[i]=s2;
 			}
 			Arc = arc;
-			
 			comboboxtsu.removeAllItems();
 			  comboboxtsu.update(null);
 		 for (int i=0; i< listado.length; i++) {
@@ -360,29 +293,194 @@ public class Verificacion extends JFrame {
 
 		 }
 		}
-	}
-
-	public File verificaciondedriver() {
-		String driver = (comboBox.getSelectedItem())+"\\EFI\\BOOT\\mt86.cfg";
-		String MPtool = (comboBox.getSelectedItem())+"\\temp\\SM_PCIe\\MPTool.exe";
-		File Respuesta = null;
-		//\\CfgFiles\\SMI\\SM2263XT\\Firmware\\R1115F0_B1xA\\MPTool.exe
-		
-		File Mp= new File(MPtool);
-		File Mm = new File(driver);
-		if(Mm.exists()) {
-			System.out.print("El archivo es de memtest");
-			Respuesta = (Mm);
-
 		}
-		else if(Mp.exists()) {
+public void registro() throws IOException, ParserConfigurationException, TransformerException, SAXException {
+
+	String ruta =  rutamaestra;
+	String Es = ESTADO;
+	String rutamodificada = ruta.replace("EFI\\BOOT\\mt86.cfg", "");
+	
+	 File archivo = null;
+     FileReader fr = null;
+     BufferedReader br = null;
+     try {
+    	 archivo = new File (rutamodificada+"ID.txt");
+         fr = new FileReader (archivo);
+         br = new BufferedReader(fr);
+         String linea;
+         while((linea=br.readLine())!=null) {
+         idusb=linea;
+         
+         }
+      		}
+     		catch(Exception e){
+    	  	e.printStackTrace();
+      		}finally{
+    	  	try{                    
+        	 	if( null != fr ){   
+            		fr.close();     
+            	}                  
+         	}catch (Exception e2){ 
+        	 	e2.printStackTrace();
+         		}
+      		}
+     String rutaregistro = "M:\\\\Test Software Utilities\\Archivo\\Registros\\Registro.xml";
+     File registrofile = new File(rutaregistro);
+     String ES = ESTADO;
+     
+     if(!registrofile.exists()) {
+     DocumentBuilderFactory docfactory = DocumentBuilderFactory.newInstance();
+		DocumentBuilder docbuilder = docfactory.newDocumentBuilder();
+
+		Document doc = docbuilder.newDocument();
+		Element rootElement = doc.createElement("Registro");
+		doc.appendChild(rootElement);
+		Element identificacion = doc.createElement("Resultado");
+		rootElement.appendChild(identificacion);
+		
+		
+		Element DI = doc.createElement("ID");
+		DI.appendChild(doc.createTextNode(""+idusb));
+		identificacion.appendChild(DI);
+		
+		Element ESTA = doc.createElement("ESTADO");
+		ESTA.appendChild(doc.createTextNode(""+ES));
+		identificacion.appendChild(ESTA);
+		
+
+		TransformerFactory transformerFactory = TransformerFactory.newInstance();
+		Transformer transformer = transformerFactory.newTransformer();
+		DOMSource source = new DOMSource(doc);
+
+		StreamResult result = new StreamResult(registrofile);
 			
-			System.out.print("Es MPTool");
-			Respuesta = (Mp);
+				transformer.transform(source, result);
+     }
+		if(ES.equals("HABILITADO")) {
+			Habilitado();
+			
 		}
-		return Respuesta;
+		else if(ES.equals("DESHABILITADO")) {
+			Deshabilitado();
+			
+		}
+	
+		}
+
+
+public void Habilitado() throws ParserConfigurationException, SAXException, IOException, TransformerException {
+	String rutaarchivo = "M:\\\\Test Software Utilities\\Archivo\\Registros\\Registro.xml";
+	String user =usuario;
+	Date date = new Date();
+	SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+	DateFormat time = new SimpleDateFormat("HH:mm:ss");
+
+	//Date date = Calendar.getInstance().getTime();
+	String fecha =sdf.format(date);
+	String hora = time.format(date);
+	
+	
+	DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+	DocumentBuilder documentBuilder =dbf.newDocumentBuilder();
+	Document doc = documentBuilder.parse(rutaarchivo);
+	doc.getDocumentElement().normalize();
+	
+	Node nodoraiz  = doc.getDocumentElement();
+	
+	Element Nuevodato = doc.createElement("Resultado");
+	
+	Element nuevoid = doc.createElement("ID");
+	nuevoid.setTextContent(idusb);
+	Nuevodato.appendChild(nuevoid);
+	
+	Element nuevoestado = doc.createElement("ESTADO");
+	nuevoestado.setTextContent("HABILITADO");
+	Nuevodato.appendChild(nuevoestado);
+	
+	Element usuario = doc.createElement("USUARIO");
+	usuario.setTextContent(user);
+	Nuevodato.appendChild(usuario);
+	
+	Element equipo = doc.createElement("EQUIPO");
+	equipo.setTextContent(Equipolocal);
+	Nuevodato.appendChild(equipo);
+	
+	Element F = doc.createElement("FECHA");
+	F.setTextContent(fecha);
+	Nuevodato.appendChild(F);
+	
+	Element H = doc.createElement("HORA");
+	H.setTextContent(hora);
+	Nuevodato.appendChild(H);	
+	
+	
+	nodoraiz.appendChild(Nuevodato);
+	TransformerFactory transformerFactory = TransformerFactory.newInstance();
+	Transformer transformer = transformerFactory.newTransformer();
+	DOMSource source = new DOMSource(doc);
+
+	StreamResult result = new StreamResult(new File("M:\\\\Test Software Utilities\\Archivo\\Registros\\Registro.xml"));
 		
-	}
+			transformer.transform(source, result);
+}
+public void Deshabilitado() throws ParserConfigurationException, SAXException, IOException, TransformerException {
+	String rutaarchivo = "M:\\\\Test Software Utilities\\Archivo\\Registros\\Registro.xml";
+	String user =usuario;
+	Date date = new Date();
+	SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+	DateFormat time = new SimpleDateFormat("HH:mm:ss");
+
+	//Date date = Calendar.getInstance().getTime();
+	String fecha =sdf.format(date);
+	String hora = time.format(date);
+	
+	
+	DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+	DocumentBuilder documentBuilder =dbf.newDocumentBuilder();
+	Document doc = documentBuilder.parse(rutaarchivo);
+	doc.getDocumentElement().normalize();
+	
+	Node nodoraiz  = doc.getDocumentElement();
+	
+	Element Nuevodato = doc.createElement("Resultado");
+	
+	Element nuevoid = doc.createElement("ID");
+	nuevoid.setTextContent(idusb);
+	Nuevodato.appendChild(nuevoid);
+	
+	Element nuevoestado = doc.createElement("ESTADO");
+	nuevoestado.setTextContent("DESHABILITADO");
+	Nuevodato.appendChild(nuevoestado);
+	
+	Element usuario = doc.createElement("USUARIO");
+	usuario.setTextContent(user);
+	Nuevodato.appendChild(usuario);
+	
+	Element equipo = doc.createElement("EQUIPO");
+	equipo.setTextContent(Equipolocal);
+	Nuevodato.appendChild(equipo);
+	
+	
+	Element F = doc.createElement("FECHA");
+	F.setTextContent(fecha);
+	Nuevodato.appendChild(F);
+	
+	Element H = doc.createElement("HORA");
+	H.setTextContent(hora);
+	Nuevodato.appendChild(H);	
+	
+	
+	nodoraiz.appendChild(Nuevodato);
+	TransformerFactory transformerFactory = TransformerFactory.newInstance();
+	Transformer transformer = transformerFactory.newTransformer();
+	DOMSource source = new DOMSource(doc);
+
+	StreamResult result = new StreamResult(new File("M:\\\\Test Software Utilities\\Archivo\\Registros\\Registro.xml"));
+		
+			transformer.transform(source, result);
+}
+
+
 	}
 	
 	
