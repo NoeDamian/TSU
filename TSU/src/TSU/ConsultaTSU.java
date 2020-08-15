@@ -141,12 +141,15 @@ public class ConsultaTSU extends JFrame {
 
 	        final JScrollPane scroll = new JScrollPane(panel);
 	        panel.setLayout(null);
+	        
+	        
+	     
 	        setTitle("Consulta");
 			setIconImage(Toolkit.getDefaultToolkit().getImage(login.class.getResource("/recursos/tecnologia.png")));
 	        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 	        getContentPane().setLayout(new BorderLayout());
 	        getContentPane().add(scroll, BorderLayout.CENTER);
-	        setSize(541, 411);
+	        setSize(538, 366);
 	        setVisible(true);
 
 		
@@ -255,6 +258,7 @@ public class ConsultaTSU extends JFrame {
            }
 			if(largo<fila) {
 		 panel.setPreferredSize(new Dimension(500, fila));
+		 panel.updateUI();
 			}
 	       }
 public void leerids() throws ParserConfigurationException, SAXException, IOException {
@@ -263,7 +267,7 @@ public void leerids() throws ParserConfigurationException, SAXException, IOExcep
 	panel.removeAll();
 	panel.repaint();
 		
-		File archivo = new File("M:\\\\Test Software Utilities\\Archivo\\TSUREGISTRO\\16072020.xml");
+		File archivo = new File("M:\\\\Test Software Utilities\\Archivo\\TSUREGISTRO\\ID.xml");
 		String idxml = null;
 		String estadoxml = null;
 		String usuarioxml = null;
@@ -297,12 +301,14 @@ public void leerids() throws ParserConfigurationException, SAXException, IOExcep
 	              idxml = elem.getElementsByTagName("ID").item(0).getTextContent();
 	              ids[temp] = new JTextField();
 	              ids[temp].setBounds(20, fila, 80, 20);
-	              ids[temp].setText(idxml);
+	              ids[temp].setText("TSU-"+idxml);
 	              ids[temp].setEditable(false);
 	              panel.add(ids[temp]);
 	           
 	              fila+=30;
 	     		 panel.setPreferredSize(new Dimension(500, fila));
+	    		 panel.updateUI();
+
 
 	             }
                   }
@@ -336,6 +342,8 @@ public void leercategorias() {
 
         fila+=21;
 		 panel.setPreferredSize(new Dimension(500, fila));
+		 panel.updateUI();
+
 
  		}
 
@@ -345,13 +353,13 @@ public void leerusuarios() throws ParserConfigurationException, SAXException, IO
 	panel.repaint();
 
 	File archivo = new File("M:\\\\Test Software Utilities\\Usuarios\\RegistroDeUsuarios.xml");
-	String idxml = null;
-	String estadoxml = null;
+	
 	String usuarioxml = null;
 	String tipoxml = null;
-	String horaxml = null;
+	
 	int fila = 20;
 	
+ int a=2;
 	DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
 	DocumentBuilder documentBuilder =dbf.newDocumentBuilder();
 	Document document = documentBuilder.parse(archivo);
@@ -362,7 +370,7 @@ public void leerusuarios() throws ParserConfigurationException, SAXException, IO
 	
 	 JTextField [] usuarios = new JTextField[listaEmpleados.getLength()];
 	 JTextField [] tipos = new JTextField[listaEmpleados.getLength()];
-	 
+	 JButton [] botones = new JButton[listaEmpleados.getLength()];
 	 
 	 	JLabel lblId = new JLabel("Usuarios");
 		lblId.setBounds(20, 0, 100, 14);
@@ -372,8 +380,16 @@ public void leerusuarios() throws ParserConfigurationException, SAXException, IO
 		lblNombre.setBounds(120, 0, 100, 14);
 		panel.add(lblNombre);
 		
+		/*JButton btnNewButton = new JButton("");
+        btnNewButton.addActionListener(new ActionListener() {
+        	public void actionPerformed(ActionEvent arg0) {
+        	}
+        });
+        btnNewButton.setIcon(new ImageIcon(ConsultaTSU.class.getResource("/recursos/interoga.png")));
+        btnNewButton.setBounds(449, 43, 24, 19);
+        panel.add(btnNewButton);
+		*/
 		
-
 
 
 	 for (int temp = 0; temp < listaEmpleados.getLength(); temp++) {
@@ -382,43 +398,104 @@ public void leerusuarios() throws ParserConfigurationException, SAXException, IO
          Element elem = (Element) nodo;
          
              if(nodo.getNodeType()==Node.ELEMENT_NODE) {
-            	 
+            	
               
-              usuarioxml = elem.getElementsByTagName("USER").item(0).getTextContent();
-              tipoxml = elem.getElementsByTagName("TIPO").item(0).getTextContent();
+            String  usuarioxml1 = elem.getElementsByTagName("USER").item(0).getTextContent();
+            String  tipoxml1 = elem.getElementsByTagName("TIPO").item(0).getTextContent();
               
               usuarios[temp] = new JTextField();
               tipos[temp] = new JTextField();
+              botones[temp] = new JButton();
 
               usuarios[temp].setBounds(20, fila, 85, 20);
-              tipos[temp].setBounds(120, fila, 120,20 );
+              tipos[temp].setBounds(120, fila, 120, 20 );
+              botones[temp].setBounds(250, fila, 24, 19);
+             
              
 
               	         
-              usuarios[temp].setText(usuarioxml);
-              tipos[temp].setText(tipoxml);
+              usuarios[temp].setText(usuarioxml1);
+              tipos[temp].setText(tipoxml1);
+              botones[temp].setIcon(new ImageIcon(ConsultaTSU.class.getResource("/recursos/interoga.png")));
               
               
              
               usuarios[temp].setEditable(false);
               tipos[temp].setEditable(false);
-             
+              botones[temp].addActionListener(new ActionListener() {
+              	public void actionPerformed(ActionEvent arg0) {
+              		JPanel panel1 = new JPanel();
+              		JFrame frame = new JFrame();
+              		
+              		JLabel nombre = new JLabel("Usuario:");
+              		nombre.setBounds(10, 10, 60, 14);
+              		panel1.add(nombre);
+              		
+              		JLabel tipo = new JLabel("Tipo: ");
+              		tipo.setBounds(10, 30, 60, 14);
+              		panel1.add(tipo);
+              		
+              		JTextField txtnombre = new JTextField();
+              		txtnombre.setBounds(80,8,120,20);
+              		txtnombre.setEditable(false);
+              		txtnombre.setText(usuarioxml1);
+              		panel1.add(txtnombre);
+              		
+              		JTextField txttipo = new JTextField();
+              		txttipo.setBounds(80,28,120,20);
+              		txttipo.setEditable(false);
+              		txttipo.setText(tipoxml1);
+              		panel1.add(txttipo);
+              		
+              		JButton btnNewButton = new JButton("Editar");
+                    btnNewButton.addActionListener(new ActionListener() {
+                    	public void actionPerformed(ActionEvent arg0) {
+                    		txtnombre.setEditable(true);
+                    		txttipo.setEditable(true);
+                    		
+                    		JLabel passold = new JLabel("Contras\neña \nVieja:");
+                    		passold.setBounds(10, 50, 100, 20);
+                      		panel1.add(passold);
+                      		
+                      		JTextField txtpassold = new JTextField();
+                      		txtpassold.setBounds(80,48,120,20);
+                      		panel1.add(txtpassold);
+                    		panel1.updateUI();
+                    	}
+                    });
+                    btnNewButton.setIcon(new ImageIcon(ConsultaTSU.class.getResource("/recursos/editar.png")));
+                    btnNewButton.setBounds(100, 125, 100, 30);
+                    panel1.add(btnNewButton);
+                    
+              		panel1.setBounds(55,55,100,100);
+              		frame.setVisible(true);
+              		panel1.setLayout(null);
+              		frame.setSize(280, 200);   
+              		frame.setTitle(usuarioxml1);
+              		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+                    frame.setLayout(new BorderLayout());
+                    frame.setContentPane(panel1);
+                     
+                    
+              		
+            	}
+            });
 
 
               
               panel.add(usuarios[temp]);
               panel.add(tipos[temp]);
+              panel.add(botones[temp]);
 
               fila+=30;
               
      		 panel.setPreferredSize(new Dimension(500, fila));
+    		 panel.updateUI();
+
 
               
             
-              //label.setText("\r\n "+idxml+" "+estadoxml+" "+usuarioxml+" "+fechaxml+" "+horaxml);
-           /* if(usuarioxml.equals(usuariolocal)) {
-            	  temp = listaEmpleados.getLength();
-              		}*/
+             
              }
               }
 	 

@@ -18,6 +18,7 @@ import java.awt.event.ActionListener;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.security.MessageDigest;
@@ -91,8 +92,8 @@ public class CrearTSU extends JFrame {
 	private JTextPane textPane ;
 	JTextArea txtcoemntarios = new JTextArea();
 	String nl = System.getProperty("line.separator");
-	File Unidades[];
-	 Object items[];
+		File Unidades[];
+	 	Object items[];
 		JTextField txtTsu = new JTextField();
 		private JTextField fechac;
 		JComboBox tipod = new JComboBox();
@@ -101,7 +102,12 @@ public class CrearTSU extends JFrame {
 	 	String Rutadrive;
 		JButton btnBuscar = new JButton("Buscar");
 		public static String equipolocal;
-
+		private JTextField txtarchivo;
+		private JTextField txtbootia32;
+		private JTextField txtbootx64;
+		public String hashbootia;
+		public String hashbootx;
+		public String hashcfg;
 
 	/**
 	 * Launch the application.
@@ -131,7 +137,7 @@ public class CrearTSU extends JFrame {
 		catch(IOException e) {e.printStackTrace();}
 		setTitle("Crear TSU");
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		setBounds(100, 100, 536, 336);
+		setBounds(100, 100, 575, 460);
 		contentPane = new JPanel();
 		contentPane.setBorder(new BevelBorder(BevelBorder.LOWERED, Color.BLACK, null, null, null));
 		setContentPane(contentPane);
@@ -156,12 +162,12 @@ public class CrearTSU extends JFrame {
 		txtTsu.setColumns(10);
 		
 		JLabel lblNewLabel_1 = new JLabel("Comentarios");
-		lblNewLabel_1.setBounds(10, 106, 110, 14);
+		lblNewLabel_1.setBounds(10, 267, 110, 14);
 		contentPane.add(lblNewLabel_1);
 		
 		CBESTADO.setSelectedItem("Habilitado");
-		CBESTADO.setModel(new DefaultComboBoxModel(new String[] {"Habilitado", "Desahibilitado"}));
-		CBESTADO.setBounds(118, 72, 86, 20);
+		CBESTADO.setModel(new DefaultComboBoxModel(new String[] {"Habilitado", "Deshabilitado"}));
+		CBESTADO.setBounds(108, 69, 86, 20);
 		contentPane.add(CBESTADO);
 		
 		JLabel lblNewLabel_2 = new JLabel("Estado");
@@ -208,18 +214,7 @@ public class CrearTSU extends JFrame {
 								e.printStackTrace();
 							}
 							
-							try {
-								hash();
-								} catch (NoSuchAlgorithmException | IOException e1) {
-								// TODO Auto-generated catch block
-								e1.printStackTrace();
-							} catch (ParserConfigurationException e) {
-									// TODO Auto-generated catch block
-									e.printStackTrace();
-								} catch (SAXException e) {
-									// TODO Auto-generated catch block
-									e.printStackTrace();
-								}
+							
 						}
 							
 							txtTsu.setEnabled(false);
@@ -233,34 +228,34 @@ public class CrearTSU extends JFrame {
 					}		
 		}
 	});
-		btnNewButton_1.setBounds(176, 215, 110, 23);
+		btnNewButton_1.setBounds(230, 388, 110, 23);
 		contentPane.add(btnNewButton_1);
 		btnNewButton_1.setToolTipText("Verifique La Infromacion");
 		
-		txtcoemntarios.setBounds(93, 106, 387, 85);
+		txtcoemntarios.setBounds(10, 292, 387, 85);
 		contentPane.add(txtcoemntarios);
 		
 		JLabel lblSeleccioneArchivo = new JLabel("Buscar Drive:");
 		lblSeleccioneArchivo.setFont(new Font("Tahoma", Font.BOLD, 11));
-		lblSeleccioneArchivo.setBounds(252, 16, 129, 14);
+		lblSeleccioneArchivo.setBounds(10, 118, 129, 14);
 		contentPane.add(lblSeleccioneArchivo);
-		
+
 		JLabel lblTipoDeDispositivo = new JLabel("Tipo de dispositivo");
-		lblTipoDeDispositivo.setBounds(271, 44, 110, 14);
+		lblTipoDeDispositivo.setBounds(271, 16, 110, 14);
 		contentPane.add(lblTipoDeDispositivo);
 		
 		tipod.setModel(new DefaultComboBoxModel(new String[] {"SELECCIONE", "SSD", "HD", "USB", "FLOPPY", "CD", "DVD", "HD", "FIREWARE"}));
-		tipod.setBounds(271, 69, 96, 20);
+		tipod.setBounds(373, 13, 96, 20);
 		contentPane.add(tipod);
 		
 		JLabel lblFechaDeCreacion = new JLabel("Fecha de creacion");
-		lblFechaDeCreacion.setBounds(385, 44, 100, 14);
+		lblFechaDeCreacion.setBounds(281, 44, 100, 14);
 		contentPane.add(lblFechaDeCreacion);
 		
 		fechac = new JTextField();
 		fechac.setEditable(false);
 		fechac.setEnabled(false);
-		fechac.setBounds(395, 72, 86, 20);
+		fechac.setBounds(383, 41, 86, 20);
 		contentPane.add(fechac);
 		fechac.setColumns(10);
 		//Calendar calendar = GregorianCalendar.getInstance();
@@ -281,12 +276,21 @@ public class CrearTSU extends JFrame {
 					} catch (IOException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
+						
 					}
 					
 				}
 			});
-			btnBuscar.setBounds(391, 12, 89, 23);
+			btnBuscar.setBounds(105, 114, 89, 23);
 			contentPane.add(btnBuscar);
+			
+			JLabel lblNewLabel = new JLabel("Archivo:");
+			lblNewLabel.setBounds(19, 150, 87, 14);
+			contentPane.add(lblNewLabel);
+			
+			
+			
+			
 
 
 
@@ -304,18 +308,69 @@ public String creacionruta() throws IOException {
 		 if (fileChooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) { 
 	       
               Rutadrive =  (fileChooser.getSelectedFile().toString());
-
-		 	}else if(fileChooser.showOpenDialog(this) == JFileChooser.CANCEL_OPTION) {
-		 		dispose();
-		 		}
+             // File rutamemtest = new File(Rutadrive+"\\EFI\\BOOT\\");
+              File rutamemtest = new File(Rutadrive);
+              if(rutamemtest.exists()) {
+      			JLabel lblSha = new JLabel("SHA-1:");
+      			lblSha.setBounds(10, 175, 76, 14);
+      			contentPane.add(lblSha);
+      			
+      			JLabel lblBootia = new JLabel("BOOTIA32.efi : ");
+      			lblBootia.setBounds(10, 200, 86, 14);
+      			contentPane.add(lblBootia);
+      			
+      			JLabel lblBootxefi = new JLabel("BOOTX64.efi: ");
+      			lblBootxefi.setBounds(10, 225, 76, 14);
+      			contentPane.add(lblBootxefi);
+      			
+      			txtarchivo = new JTextField();
+      			txtarchivo.setBounds(108, 172, 191, 20);
+      			contentPane.add(txtarchivo);
+      			txtarchivo.setColumns(10);
+      			
+      			txtbootia32 = new JTextField();
+      			txtbootia32.setBounds(108, 197, 191, 20);
+      			contentPane.add(txtbootia32);
+      			txtbootia32.setColumns(10);
+      			
+      			txtbootx64 = new JTextField();
+      			txtbootx64.setBounds(108, 222, 191, 20);
+      			contentPane.add(txtbootx64);
+      			txtbootx64.setColumns(10);
+      			try {
+					hashbootai();
+				} catch (NoSuchAlgorithmException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+      			try {
+					hashbootx();
+				} catch (NoSuchAlgorithmException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+      			try {
+					hash();
+				} catch (NoSuchAlgorithmException | ParserConfigurationException | SAXException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+      			contentPane.repaint();;
+      		}
+              try {
+				hash();
+			} catch (NoSuchAlgorithmException | ParserConfigurationException | SAXException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		 	}
 		 
 		return Rutadrive;	
 	}
 
 public void creacionxml() throws NoSuchAlgorithmException, IOException, SAXException {
 	try {
-		
-		String nuevo = hash();
+		String nuevo = hashcfg;
 		String ES = ((String) (CBESTADO.getSelectedItem()));
 		String FC = (txtcoemntarios.getText());
 		String N = (txtTsu.getText());
@@ -323,6 +378,8 @@ public void creacionxml() throws NoSuchAlgorithmException, IOException, SAXExcep
 		String H =(nuevo);
 		String F = (fechac.getText());
 		String T = ((String) (tipod.getSelectedItem()));
+		String hashbootai = hashbootia ;
+		String hashboot_x = hashbootx;
 		
 		logger.crearLog("Creacion de nuevo TSU en proceso");
 	//	File Nombredelarchivo = new File(N);
@@ -359,14 +416,29 @@ public void creacionxml() throws NoSuchAlgorithmException, IOException, SAXExcep
 				catalogo.appendChild(estado);
 				logger.crearLog("Estado: "+ES);
 
-				/*Element path =doc.createElement("ruta");
-				path.appendChild(doc.createTextNode(""+ruta));
-				nombre.appendChild(path);*/
+				
 				
 				Element hash = doc.createElement("hash");
 				hash.appendChild(doc.createTextNode(""+H));
 				catalogo.appendChild(hash);
 				logger.crearLog("SHA-1: "+H);
+				File ruta = new File(Rutadrive);
+				
+				if(ruta.exists()) {
+					Element hashbootia = doc.createElement("hashbootia32");
+					hashbootia.appendChild(doc.createTextNode(""+hashbootai));
+					catalogo.appendChild(hashbootia);
+					logger.crearLog("SHA-1 del archivo BOOTIA32.EFI: "+hashbootai);
+					
+					Element hashbootx = doc.createElement("hashbootx64");
+					hashbootx.appendChild(doc.createTextNode(""+hashboot_x));
+					catalogo.appendChild(hashbootx);
+					logger.crearLog("SHA-1 del archivo BOOTX64.EFI: "+hashboot_x);
+					
+					
+				}
+				
+				
 
 				
 				Element fecha = doc.createElement("fecha");
@@ -419,7 +491,7 @@ public void verificaciondeesxistencia() {
 
 
 
-public  String hash() throws NoSuchAlgorithmException, IOException, ParserConfigurationException, SAXException {
+public  void hash() throws NoSuchAlgorithmException, IOException, ParserConfigurationException, SAXException {
 	File sFichero = new File(Rutadrive);
 	
 	
@@ -434,15 +506,54 @@ bis.close();
 
 byte[] hash = digest.digest();
 String filehash= Base64.getEncoder().encodeToString(hash);
+txtarchivo.setText(filehash);
 
-
-return filehash;
-
+hashcfg = filehash;
 
 
 	}
 
+public void hashbootai() throws NoSuchAlgorithmException, IOException {
+File sFichero = new File(Rutadrive);
+String rutamodificada = Rutadrive;
+rutamodificada.replace("\\mt86.cfg", "\\BOOTIA32.efi");
+File rutanueva = new File(rutamodificada.replace("\\mt86.cfg", "\\BOOTIA32.efi"));
+	
+	byte[] buffer= new byte[8192];
+	int count;
+	MessageDigest digest = MessageDigest.getInstance("SHA-1");
+	BufferedInputStream bis = new BufferedInputStream(new FileInputStream(rutanueva));
+	while ((count = bis.read(buffer)) > 0) {
+    digest.update(buffer, 0, count);
+}
+bis.close();
 
+byte[] hash = digest.digest();
+String filehash= Base64.getEncoder().encodeToString(hash);
+txtbootia32.setText(filehash);
+hashbootia = filehash;
+	
+}
+public void hashbootx() throws NoSuchAlgorithmException, IOException {
+	File sFichero = new File(Rutadrive);
+	String rutamodificada = Rutadrive;
+	rutamodificada.replace("\\mt86.cfg", "\\BOOTIA32.efi");
+	File rutanueva = new File(rutamodificada.replace("\\mt86.cfg", "\\BOOTX64.efi"));
+		
+		byte[] buffer= new byte[8192];
+		int count;
+		MessageDigest digest = MessageDigest.getInstance("SHA-1");
+		BufferedInputStream bis = new BufferedInputStream(new FileInputStream(rutanueva));
+		while ((count = bis.read(buffer)) > 0) {
+	    digest.update(buffer, 0, count);
+	}
+	bis.close();
 
+	byte[] hash = digest.digest();
+	String filehash= Base64.getEncoder().encodeToString(hash);
+	txtbootx64.setText(filehash);
+	hashbootx = filehash;
+	
+}
 }
 
