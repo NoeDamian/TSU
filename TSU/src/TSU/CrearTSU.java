@@ -453,7 +453,11 @@ public void creacionxml() throws NoSuchAlgorithmException, IOException, SAXExcep
 
 				
 				Element comentarios = doc.createElement("comentarios");
+				if(FC.isEmpty()) {
+					comentarios.appendChild(doc.createTextNode(" "));
+				}else {
 				comentarios.appendChild(doc.createTextNode(""+FC));
+				}
 				catalogo.appendChild(comentarios);
 				
 				
